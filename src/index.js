@@ -51,6 +51,29 @@ app.post("/account", (req, res) => {
 
 app.use(verifyIfExistsAccountCPF);
 
+app.get("/account", (req, res) => {
+  const { customer } = req;
+  
+  return res.status(200).json(customer);
+});
+
+app.put("/account", (req, res) => {
+  const { name } = req.body;
+  const { customer } = req;
+  
+  customer.name = name;
+  
+  return res.status(201).send();
+});
+
+app.delete("/account", (req, res) => {
+  const { customer } = req;
+  
+  customers.splice(customer, 1);
+  
+  return res.status(200).json(customers);
+});
+
 app.get("/statement", (req, res) => {
   const { customer } = req;
   return res.json(customer.statement);
@@ -104,6 +127,12 @@ app.post("/withdraw", (req, res) => {
 
   customer.statement.push(statementOperation);
   return res.status(201).send();
+});
+
+app.get("/balance", (req, res) => {
+  const { customer } = req;
+  const balance = getBalance(customer.statement);
+  return res.json(balance)
 });
 
 app.listen(3333);
